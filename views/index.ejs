@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Payment</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Pay with Razorpay</h2>
+    <input type="number" id="amount" placeholder="Enter Amount" />
+    <button onclick="startPayment()">Pay Now</button>
+
+    <script>
+        async function startPayment() {
+            const amount = document.getElementById("amount").value;
+            if (!amount) return alert("Enter a valid amount");
+
+            const response = await fetch("/order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ amount }),
+            });
+
+            const order = await response.json();
+console.log(order)
+            const options = {
+    key: "rzp_test_M5rULMjI4EI9et",
+    amount: order.amount,
+    currency: order.currency,
+    order_id: order.id,  // This must be sent
+    handler: async function (response) {
+        console.log("Full Payment Response:", response); // Debugging
+
+        // Send response to backend for verification
+        const verifyResponse = await fetch("/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(response),
+        });
+
+        const result = await verifyResponse.json();
+        console.log("Verification Response:", result);
+
+        if (result.success) {
+            alert("Payment Successful!");
+        } else {
+            alert("Payment Verification Failed!");
+        }
+    },
+};
+console.log(options)
+
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+    </script>
+</body>
+</html>
