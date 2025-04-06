@@ -19,6 +19,16 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/terms_and_condition", (req, res) => {
+res.render("terms_and_condition");
+});
+
+app.get("/contact_us", (req, res) => {
+  res.render("contact_us");
+});
+
+
+
 // Create Order
 app.post("/order", async (req, res) => {
   try {
