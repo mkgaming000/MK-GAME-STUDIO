@@ -194,7 +194,7 @@
       e.preventDefault(); // Prevent form reload
 
       const amount = parseInt(amountInput.value);
-      if (isNaN(amount) || amount < 20) {
+      if (isNaN(amount) || amount > 20) {
         amountInput.classList.add('error-input');
         errorMsg.style.display = 'block';
         return;
